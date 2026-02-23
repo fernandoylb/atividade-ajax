@@ -27,34 +27,46 @@
                     <span id="following"></span>
                 </li>
             </ul>
-            <a href="#" class="profile-link">Ver no Github</a>
+            <a href="https://github.com/fernandoylb" class="profile-link">Ver no Github</a>
         </div>
     </header>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const nameElement = document.querySelector('#name');
-            const usernameElement = document.querySelector('#username');
-            const avatarElement = document.querySelector('#avatar');
-            const reposElement = document.querySelector('#repos');
-            const followersElement = document.querySelector('followers');
-            const followingElement = document.querySelector('#following');
-            const linkElement = document.querySelector('#link');
+    document.addEventListener('DOMContentLoaded', function() {
+        const nameElement = document.querySelector('#name');
+        const usernameElement = document.querySelector('#username');
+        const avatarElement = document.querySelector('#avatar');
+        const reposElement = document.querySelector('#repos');
+        const followersElement = document.querySelector('#followers');
+        const followingElement = document.querySelector('#following');
+        const linkElement = document.querySelector('#link');
 
-            fetch('https://api.github.com/users/fernandoylb')
-                .then(function(res) {
-                    return res.json();
-                })
-                .then(function(json) {
-                    nameElement.innerText = json.name;
-                    usernameElement.innerText = json.login;
+        fetch('https://api.github.com/users/fernandoylb')
+            .then(function(res) {
+                if (!res.ok) {
+                    throw new Error('Erro na requisição');
+                }
+                return res.json();
+            })
+            .then(function(json) {
+                try {
+                    nameElement.innerText = json.name || 'Sem nome';
+                    usernameElement.innerText = '@' + json.login;
                     avatarElement.src = json.avatar_url;
                     followingElement.innerText = json.following;
                     followersElement.innerText = json.followers;
-                    repos.innerText = json.public_repos;
+                    reposElement.innerText = json.public_repos;
                     linkElement.href = json.html_url;
-                })
-        })
+                } catch (erro) {
+                    console.error('Erro ao preencher dados:', erro);
+                    nameElement.innerText = 'Erro ao exibir dados';
+                }
+            })
+            .catch(function(erro) {
+                console.error('Falha na requisição:', erro);
+                nameElement.innerText = 'Erro ao carregar';
+            });
+    });
     </script>
 </body>
 </html>
